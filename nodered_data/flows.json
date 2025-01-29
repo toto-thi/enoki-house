@@ -316,7 +316,7 @@
         "type": "debug",
         "z": "05f58b1d7419cee3",
         "name": "Current Temp",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -341,7 +341,7 @@
         "finalize": "",
         "libs": [],
         "x": 390,
-        "y": 360,
+        "y": 340,
         "wires": [
             [
                 "5ff5b141b098917b",
@@ -363,7 +363,7 @@
         "rh": 0,
         "inputs": 0,
         "x": 120,
-        "y": 360,
+        "y": 340,
         "wires": [
             [
                 "43e0319ce008fa92",
@@ -376,7 +376,7 @@
         "type": "debug",
         "z": "05f58b1d7419cee3",
         "name": "Current Humidity",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -385,7 +385,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 450,
-        "y": 420,
+        "y": 400,
         "wires": []
     },
     {
@@ -402,7 +402,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 190,
-        "y": 420,
+        "y": 400,
         "wires": []
     },
     {
@@ -420,7 +420,7 @@
         "expiry": "",
         "broker": "74cf56750d051bd0",
         "x": 690,
-        "y": 360,
+        "y": 340,
         "wires": []
     },
     {
@@ -436,7 +436,7 @@
         "finalize": "",
         "libs": [],
         "x": 390,
-        "y": 500,
+        "y": 480,
         "wires": [
             [
                 "7390916ad97c599b",
@@ -458,7 +458,7 @@
         "rh": 0,
         "inputs": 0,
         "x": 120,
-        "y": 500,
+        "y": 480,
         "wires": [
             [
                 "291a71c905a89b97",
@@ -471,7 +471,7 @@
         "type": "debug",
         "z": "05f58b1d7419cee3",
         "name": "Current CO2",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -480,7 +480,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 430,
-        "y": 580,
+        "y": 560,
         "wires": []
     },
     {
@@ -497,7 +497,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 180,
-        "y": 580,
+        "y": 560,
         "wires": []
     },
     {
@@ -515,7 +515,7 @@
         "expiry": "",
         "broker": "74cf56750d051bd0",
         "x": 680,
-        "y": 500,
+        "y": 480,
         "wires": []
     },
     {
@@ -612,7 +612,7 @@
         "id": "84cb79988b3bf37f",
         "type": "inject",
         "z": "05f58b1d7419cee3",
-        "name": "",
+        "name": "Test Injection",
         "props": [
             {
                 "p": "payload"
@@ -625,12 +625,10 @@
         "topic": "",
         "payload": "388",
         "payloadType": "num",
-        "x": 210,
-        "y": 660,
+        "x": 170,
+        "y": 860,
         "wires": [
-            [
-                "8cbb1d9b35b25ea3"
-            ]
+            []
         ]
     }
 ]

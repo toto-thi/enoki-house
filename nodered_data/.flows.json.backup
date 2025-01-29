@@ -471,7 +471,7 @@
         "type": "debug",
         "z": "05f58b1d7419cee3",
         "name": "Current CO2",
-        "active": false,
+        "active": true,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -607,5 +607,30 @@
         "x": 720,
         "y": 160,
         "wires": []
+    },
+    {
+        "id": "84cb79988b3bf37f",
+        "type": "inject",
+        "z": "05f58b1d7419cee3",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "388",
+        "payloadType": "num",
+        "x": 210,
+        "y": 660,
+        "wires": [
+            [
+                "8cbb1d9b35b25ea3"
+            ]
+        ]
     }
 ]
