@@ -1,0 +1,85 @@
+services:
+  mosquitto:
+    container_name: mqtt_broker
+    image: eclipse-mosquitto:latest
+    restart: always
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+    networks:
+      enoki-net:
+        ipv4_address: 172.20.0.10
+
+  simulator:
+    container_name: data_generator # change name later
+    build:
+      context: .
+    restart: always
+    depends_on:
+      - mosquitto
+    networks:
+      enoki-net:
+        ipv4_address: 172.20.0.11
+
+  influxdb:
+    container_name: influxdb
+    image: influxdb:2.4-alpine
+    restart: always
+    ports:
+      - "8086:8086"  
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_BUCKET=enoki-bucket
+      - DOCKER_INFLUXDB_INIT_USERNAME=admin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=admin123
+      - DOCKER_INFLUXDB_INIT_ORG=enoki-org
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=enoki_token
+    volumes:
+      - ./influxdb:/var/lib/influxdb2
+    networks:
+      enoki-net:
+        ipv4_address: 172.20.0.12
+
+  node-red:
+    container_name: node_red
+    image: nodered/node-red:latest
+    restart: always
+    ports:
+      - "1880:1880"  # Node-RED web UI port
+    networks:
+      enoki-net:
+        ipv4_address: 172.20.0.13
+    volumes:
+      - ./nodered_data:/data
+    depends_on:
+      - mosquitto
+      - influxdb
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:latest
+    restart: always
+    depends_on:
+      - influxdb
+    ports:
+      - "3000:3000"  # Grafana web UI
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin  
+      - GF_SECURITY_ADMIN_PASSWORD=admin777#  
+    volumes:
+      - ./grafana:/var/lib/grafana
+    networks:
+      enoki-net:
+        ipv4_address: 172.20.0.14
+
+
+volumes:
+  influxdb_data:
+
+networks:
+  enoki-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
