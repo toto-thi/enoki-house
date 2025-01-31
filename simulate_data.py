@@ -1,39 +1,63 @@
-import random
 import time
+import json
+import random
 import paho.mqtt.client as mqtt
 
-# MQTT Configuration
-MQTT_BROKER = "mosquitto"  
-MQTT_PORT = 1883
-MQTT_TOPIC_TEMPERATURE = "enoki/temperature"
-MQTT_TOPIC_HUMIDITY = "enoki/humidity"
-MQTT_TOPIC_CO2 = "enoki/co2"
+# Load configuration from JSON file
+with open("config.json", "r") as config_file:
+    config = json.load(config_file)
+    
+MQTT_BROKER = config["mqtt"]["broker"]
+MQTT_PORT = config["mqtt"]["port"]
+PARAMETERS = config["parameters"]
+HOUSES = config["houses"]
 
-# Generate normal data within realistic ranges
-def generate_data(sensor):
-    if sensor == "Temperature (°C)":
-        return round(random.uniform(10, 25), 2)  # Normal temperature range
-    elif sensor == "Humidity (%)":
-        return round(random.uniform(85, 95), 2)  # Normal humidity range
-    elif sensor == "CO2 (ppm)":
-        return round(random.uniform(400, 800), 2)  # Normal CO2 range
+# State dictionary to store the last known values for each sensor
+sensor_states = {
+    "temperature": 20.0,  # Starting point for temperature
+    "humidity": 90.0,     # Starting point for humidity
+    "co2": 600.0          # Starting point for CO2
+}
 
-# Generate abnormal data for specific sensors
-def generate_abnormal_data(sensor):
-    if sensor == "Temperature (°C)":
-        return round(random.uniform(0, 9), 2)  # Abnormally low temperature
-    elif sensor == "Humidity (%)":
-        return round(random.uniform(75, 84), 2)  # Abnormally low humidity
-    elif sensor == "CO2 (ppm)":
-        return round(random.uniform(1001, 1500), 2)  # Abnormally high CO2 levels
+# Simulate realistic gradual changes for a given sensor
+def simulate_gradual_change(sensor_type):
+    if sensor_type == "temperature":
+        # Adjust temperature by ±0.5°C
+        change = random.uniform(-0.5, 0.5)
+        sensor_states[sensor_type] = max(10, min(25, sensor_states[sensor_type] + change))
+    elif sensor_type == "humidity":
+        # Adjust humidity by ±1%
+        change = random.uniform(-1, 1)
+        sensor_states[sensor_type] = max(85, min(95, sensor_states[sensor_type] + change))
+    elif sensor_type == "co2":
+        # Adjust CO2 by ±10 ppm
+        change = random.uniform(-10, 10)
+        sensor_states[sensor_type] = max(400, min(800, sensor_states[sensor_type] + change))
+    
+    return round(sensor_states[sensor_type], 2)
+
+# Generate abnormal data within the given range (supports both too low & too high)
+def generate_abnormal_data(sensor_type):
+    abnormal_range = PARAMETERS[sensor_type]["abnormal_range"]
+
+    if isinstance(abnormal_range[0], list):  # If abnormal range has both low and high values
+        low_range = abnormal_range[0]
+        high_range = abnormal_range[1]
+        
+        if random.random() < 0.5:  # 50% chance to pick low or high abnormal value
+            return round(random.uniform(low_range[0], low_range[1]), 2)
+        else:
+            return round(random.uniform(high_range[0], high_range[1]), 2)
+
+    return round(random.uniform(abnormal_range[0], abnormal_range[1]), 2)
 
 # Generate data with occasional abnormalities
-def get_data(sensor):
+def get_data(sensor_type):
     if random.random() < 0.05:  # 5% chance for abnormal data
-        return generate_abnormal_data(sensor)
+        return generate_abnormal_data(sensor_type)
     else:
-        return generate_data(sensor)
-    
+        return simulate_gradual_change(sensor_type)
+
 # MQTT Connection Callback
 def on_connect(client, userdata, flags, reason_code, properties=None):
     if reason_code == 0:
@@ -64,18 +88,14 @@ def publish_data():
     client.loop_start()
 
     try:
-        sensors = ["Temperature (°C)", "Humidity (%)", "CO2 (ppm)"]
         while True:
-            for sensor in sensors:
-                value = get_data(sensor)
-                if sensor == "Temperature (°C)":
-                    client.publish(MQTT_TOPIC_TEMPERATURE, value)
-                elif sensor == "Humidity (%)":
-                    client.publish(MQTT_TOPIC_HUMIDITY, value)
-                elif sensor == "CO2 (ppm)":
-                    client.publish(MQTT_TOPIC_CO2, value)
+            for house_name, house_data in HOUSES.items():
+                for sensor_name, sensor_info in house_data["sensors"].items():
+                    sensor_type = sensor_name.split("_")[0]  # Extract sensor type (temperature, humidity, co2)
+                    value = get_data(sensor_type)
+                    client.publish(sensor_info["topic"], value)
+                    print(f"[{house_name}] Published: {sensor_name} = {value} to {sensor_info['topic']}")
 
-                print(f"Published: {sensor} = {value}")
             time.sleep(10)  # Publish every 10 seconds
 
     except KeyboardInterrupt:

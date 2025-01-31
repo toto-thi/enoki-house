@@ -8,9 +8,17 @@
         "env": []
     },
     {
-        "id": "05f58b1d7419cee3",
+        "id": "2108e6928f5f2f38",
         "type": "tab",
         "label": "Flow 2 - Actuator Actions",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "29f30ea989ea8021",
+        "type": "tab",
+        "label": "Flow 3 - Actuator Notification",
         "disabled": false,
         "info": "",
         "env": []
@@ -62,32 +70,58 @@
         "rejectUnauthorized": true
     },
     {
-        "id": "86477a8174688b3a",
+        "id": "d884453a1c3fdf2e",
+        "type": "telegram bot",
+        "botname": "Enoki-bot",
+        "usernames": "",
+        "chatids": "6263441576",
+        "baseapiurl": "",
+        "testenvironment": false,
+        "updatemode": "polling",
+        "pollinterval": 300,
+        "usesocks": false,
+        "sockshost": "",
+        "socksprotocol": "socks5",
+        "socksport": 6667,
+        "socksusername": "anonymous",
+        "sockspassword": "",
+        "bothost": "",
+        "botpath": "",
+        "localbotport": 8443,
+        "publicbotport": 8443,
+        "privatekey": "",
+        "certificate": "",
+        "useselfsignedcertificate": false,
+        "sslterminated": false,
+        "verboselogging": false
+    },
+    {
+        "id": "b99e071138a19155",
         "type": "mqtt in",
         "z": "65217f725802e13e",
         "name": "",
-        "topic": "enoki/#",
+        "topic": "enoki/house_1/sensor/#",
         "qos": "2",
         "datatype": "auto-detect",
         "broker": "74cf56750d051bd0",
         "nl": false,
-        "rap": false,
+        "rap": true,
         "rh": 0,
         "inputs": 0,
-        "x": 90,
-        "y": 120,
+        "x": 140,
+        "y": 100,
         "wires": [
             [
-                "b6b4df813e5dc0b7",
-                "417f28b32b0c1f7f"
+                "8fe858ed96002b44",
+                "aee2bc35b3c06340"
             ]
         ]
     },
     {
-        "id": "b6b4df813e5dc0b7",
+        "id": "8fe858ed96002b44",
         "type": "debug",
         "z": "65217f725802e13e",
-        "name": "subscribe all topics",
+        "name": "Debug Raw Data from sensor",
         "active": false,
         "tosidebar": true,
         "console": false,
@@ -96,189 +130,16 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 170,
-        "y": 200,
+        "x": 210,
+        "y": 180,
         "wires": []
     },
     {
-        "id": "7189bcf7b2b7aba9",
-        "type": "influxdb out",
-        "z": "65217f725802e13e",
-        "influxdb": "ced685228dea91e6",
-        "name": "influxdb",
-        "measurement": "enoki_sensors",
-        "precision": "",
-        "retentionPolicy": "",
-        "database": "database",
-        "precisionV18FluxV20": "ms",
-        "retentionPolicyV18Flux": "",
-        "org": "enoki-org",
-        "bucket": "enoki-bucket",
-        "x": 600,
-        "y": 120,
-        "wires": []
-    },
-    {
-        "id": "417f28b32b0c1f7f",
+        "id": "aee2bc35b3c06340",
         "type": "function",
         "z": "65217f725802e13e",
-        "name": "save data to InfluxDB",
-        "func": "const topic = msg.topic.split(\"/\")[1];\n\nif (msg.payload && typeof msg.payload === \"object\") {\n    if (msg.payload.temperature && typeof msg.payload.temperature === \"number\") {\n        msg.payload = [\n            {\n                value: msg.payload.temperature \n            },\n            {\n                sensor: topic\n            }\n        ];\n        return msg;\n    } else {\n        return null;\n    }\n} else if (msg.payload && !isNaN(parseFloat(msg.payload))) {\n    // Handle raw numeric payloads\n    const value = parseFloat(msg.payload);\n    msg.payload = [\n        {\n            value: value \n        },\n        {\n            sensor: topic \n        }\n    ];\n    return msg;\n}\n\nreturn null;",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 340,
-        "y": 120,
-        "wires": [
-            [
-                "7189bcf7b2b7aba9",
-                "55da307e8ec4fabc"
-            ]
-        ]
-    },
-    {
-        "id": "55da307e8ec4fabc",
-        "type": "debug",
-        "z": "65217f725802e13e",
-        "name": "InfluxDB Payload Preview",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 410,
-        "y": 60,
-        "wires": []
-    },
-    {
-        "id": "e94100a1af917324",
-        "type": "mqtt in",
-        "z": "65217f725802e13e",
-        "name": "",
-        "topic": "enoki/actuators/#",
-        "qos": "2",
-        "datatype": "auto-detect",
-        "broker": "74cf56750d051bd0",
-        "nl": false,
-        "rap": true,
-        "rh": 0,
-        "inputs": 0,
-        "x": 120,
-        "y": 340,
-        "wires": [
-            [
-                "9fa9284f6f917885",
-                "ef588a7598ecad79"
-            ]
-        ]
-    },
-    {
-        "id": "9fa9284f6f917885",
-        "type": "debug",
-        "z": "65217f725802e13e",
-        "name": "Subscribe all topic from action",
-        "active": false,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 250,
-        "y": 420,
-        "wires": []
-    },
-    {
-        "id": "ef588a7598ecad79",
-        "type": "function",
-        "z": "65217f725802e13e",
-        "name": "save actuators state to db",
-        "func": "if (msg.payload && typeof msg.payload === \"object\") {\n    let action = msg.payload.action; \n    let sensorType = null;          \n    let value = null;               \n\n    if (\"temperature\" in msg.payload) {\n        sensorType = \"temperature\";\n        value = msg.payload.temperature;\n    } else if (\"humidity\" in msg.payload) {\n        sensorType = \"humidity\";\n        value = msg.payload.humidity;\n    } else if (\"co2\" in msg.payload) {\n        sensorType = \"co2\";\n        value = msg.payload.co2;\n    }\n\n    if (sensorType && value !== null) {\n        msg.payload = [\n            {\n                value: value // The numeric value (temperature, humidity, or co2)\n            },\n            {\n                sensor: sensorType, \n                action: action      \n            }\n        ];\n        return msg;\n    }\n}\n\nreturn null;",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 390,
-        "y": 340,
-        "wires": [
-            [
-                "387dbc43f616933e",
-                "ca92dc99904ebaf5"
-            ]
-        ]
-    },
-    {
-        "id": "387dbc43f616933e",
-        "type": "influxdb out",
-        "z": "65217f725802e13e",
-        "influxdb": "ced685228dea91e6",
-        "name": "actuator data",
-        "measurement": "actuator_states",
-        "precision": "",
-        "retentionPolicy": "",
-        "database": "database",
-        "precisionV18FluxV20": "ms",
-        "retentionPolicyV18Flux": "",
-        "org": "enoki-org",
-        "bucket": "enoki-bucket",
-        "x": 660,
-        "y": 340,
-        "wires": []
-    },
-    {
-        "id": "ca92dc99904ebaf5",
-        "type": "debug",
-        "z": "65217f725802e13e",
-        "name": "InfluxDB Payload Preview",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 490,
-        "y": 280,
-        "wires": []
-    },
-    {
-        "id": "67c156f13ea62e4a",
-        "type": "mqtt in",
-        "z": "05f58b1d7419cee3",
-        "name": "",
-        "topic": "enoki/temperature",
-        "qos": "2",
-        "datatype": "auto-detect",
-        "broker": "74cf56750d051bd0",
-        "nl": false,
-        "rap": true,
-        "rh": 0,
-        "inputs": 0,
-        "x": 130,
-        "y": 160,
-        "wires": [
-            [
-                "60ccfa03de163a3f",
-                "aa8cfb35bb2c6be6"
-            ]
-        ]
-    },
-    {
-        "id": "60ccfa03de163a3f",
-        "type": "function",
-        "z": "05f58b1d7419cee3",
-        "name": "Temperature Control",
-        "func": "let temperature = parseFloat(msg.payload);\n\n// Retrieve previous states from global variables\nlet heaterOn = global.get(\"heater_on\") || false;\nlet coolingOn = global.get(\"cooling_on\") || false;\nlet lastAction = global.get(\"lastTemperatureAction\") || \"idle\";\n\n// Define new action\nlet newAction = \"idle\";\n\n// Adjust temperature based on active systems\nif (heaterOn) {\n    temperature += 0.25; // Gradually increase temperature\n}\nif (coolingOn) {\n    temperature -= 0.25; // Gradually decrease temperature\n}\n\n// Ensure temperature stays within realistic bounds\nif (temperature > 50) temperature = 50;\nif (temperature < -10) temperature = -10;\n\n// Determine system behavior based on temperature\nif (temperature < 10 && !heaterOn) {\n    newAction = \"heater_on\";\n    heaterOn = true;\n    coolingOn = false;\n    global.set(\"heater_on\", true);\n    global.set(\"cooling_on\", false);\n} else if (temperature > 25 && !coolingOn) {\n    newAction = \"cooling_on\";\n    coolingOn = true;\n    heaterOn = false;\n    global.set(\"cooling_on\", true);\n    global.set(\"heater_on\", false);\n} else if (heaterOn && temperature >= 10) {\n    newAction = \"heater_off\";\n    heaterOn = false;\n    global.set(\"heater_on\", false);\n} else if (coolingOn && temperature <= 25) {\n    newAction = \"cooling_off\";\n    coolingOn = false;\n    global.set(\"cooling_on\", false);\n}\n\n// Avoid sending duplicate actions\nif (newAction !== lastAction) {\n    global.set(\"lastTemperatureAction\", newAction);\n\n    // Publish to MQTT for visualization\n    msg.payload = {\n        action: newAction,\n        temperature: temperature\n    };\n    node.send([msg, { topic: \"enoki/actuators/temperature\", payload: newAction }]);\n    return msg;\n}\n\nreturn null;",
+        "name": "Transform to InfluxDB",
+        "func": "const metadata = msg.topic.split(\"/\")\nconst house = metadata[1];\nconst sensor = metadata[3];\nconst device = metadata[4];\nconst value = parseFloat(msg.payload);\n\nmsg.payload = [\n    { \n        value: value \n    },\n    { \n        house: house, \n        device: device, \n        sensor: sensor\n    }\n];\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -286,36 +147,19 @@
         "finalize": "",
         "libs": [],
         "x": 420,
-        "y": 160,
+        "y": 100,
         "wires": [
             [
-                "c67736f7e9b48cd1",
-                "e0d3fe114f88f597"
+                "07b5553fac490fb8",
+                "58826b4ef40b7ff8"
             ]
         ]
     },
     {
-        "id": "aa8cfb35bb2c6be6",
+        "id": "07b5553fac490fb8",
         "type": "debug",
-        "z": "05f58b1d7419cee3",
-        "name": "sub temperature",
-        "active": false,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 200,
-        "y": 240,
-        "wires": []
-    },
-    {
-        "id": "c67736f7e9b48cd1",
-        "type": "debug",
-        "z": "05f58b1d7419cee3",
-        "name": "Current Temp",
+        "z": "65217f725802e13e",
+        "name": "Debug Influxdb format",
         "active": true,
         "tosidebar": true,
         "console": false,
@@ -325,277 +169,103 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 480,
-        "y": 240,
+        "y": 40,
         "wires": []
     },
     {
-        "id": "84b817dc21787b63",
-        "type": "function",
-        "z": "05f58b1d7419cee3",
-        "name": "Humidity Control",
-        "func": "let humidity = parseFloat(msg.payload);\n\n// Retrieve previous states from global variables\nlet humidifierOn = global.get(\"humidifier_on\") || false;\nlet dehumidifierOn = global.get(\"dehumidifier_on\") || false;\nlet lastAction = global.get(\"lastHumidityAction\") || \"idle\";\n\n// Define new action\nlet newAction = \"idle\";\n\nif (humidifierOn) {\n    humidity += 1; // Gradually increase humidity\n}\nif (dehumidifierOn) {\n    humidity -= 1; // Gradually decrease humidity\n}\n\n// Ensure humidity stays within realistic bounds\nif (humidity > 100) humidity = 100;\nif (humidity < 0) humidity = 0;\n\n// Determine system behavior based on humidity\nif (humidity < 85 && !humidifierOn) {\n    newAction = \"humidifier_on\";\n    humidifierOn = true;\n    dehumidifierOn = false;\n    global.set(\"humidifier_on\", true);\n    global.set(\"dehumidifier_on\", false);\n} else if (humidity > 95 && !dehumidifierOn) {\n    newAction = \"dehumidifier_on\";\n    dehumidifierOn = true;\n    humidifierOn = false;\n    global.set(\"dehumidifier_on\", true);\n    global.set(\"humidifier_on\", false);\n} else if (humidifierOn && humidity >= 85) {\n    newAction = \"humidifier_off\";\n    humidifierOn = false;\n    global.set(\"humidifier_on\", false);\n} else if (dehumidifierOn && humidity <= 95) {\n    newAction = \"dehumidifier_off\";\n    dehumidifierOn = false;\n    global.set(\"dehumidifier_on\", false);\n}\n\n// Avoid sending duplicate actions\nif (newAction !== lastAction) {\n    global.set(\"lastHumidityAction\", newAction);\n    msg.payload = {\n        action: newAction,\n        humidity: humidity\n    };\n\n    node.send([msg, { topic: \"enoki/actuators/humidity\", payload: newAction }]);\n    return msg;\n}\n\nreturn null;",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 390,
-        "y": 360,
-        "wires": [
-            [
-                "5ff5b141b098917b",
-                "fe2d96aca1b43c98"
-            ]
-        ]
-    },
-    {
-        "id": "d3d49319e4ba0fb1",
-        "type": "mqtt in",
-        "z": "05f58b1d7419cee3",
-        "name": "",
-        "topic": "enoki/humidity",
-        "qos": "2",
-        "datatype": "auto-detect",
-        "broker": "74cf56750d051bd0",
-        "nl": false,
-        "rap": true,
-        "rh": 0,
-        "inputs": 0,
-        "x": 120,
-        "y": 360,
-        "wires": [
-            [
-                "43e0319ce008fa92",
-                "84b817dc21787b63"
-            ]
-        ]
-    },
-    {
-        "id": "5ff5b141b098917b",
-        "type": "debug",
-        "z": "05f58b1d7419cee3",
-        "name": "Current Humidity",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 450,
-        "y": 420,
-        "wires": []
-    },
-    {
-        "id": "43e0319ce008fa92",
-        "type": "debug",
-        "z": "05f58b1d7419cee3",
-        "name": "sub humidity",
-        "active": false,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 190,
-        "y": 420,
-        "wires": []
-    },
-    {
-        "id": "fe2d96aca1b43c98",
-        "type": "mqtt out",
-        "z": "05f58b1d7419cee3",
-        "name": "",
-        "topic": "enoki/actuators/humidity",
-        "qos": "2",
-        "retain": "",
-        "respTopic": "",
-        "contentType": "",
-        "userProps": "",
-        "correl": "",
-        "expiry": "",
-        "broker": "74cf56750d051bd0",
-        "x": 690,
-        "y": 360,
-        "wires": []
-    },
-    {
-        "id": "8cbb1d9b35b25ea3",
-        "type": "function",
-        "z": "05f58b1d7419cee3",
-        "name": "CO2 Control",
-        "func": "let co2 = parseFloat(msg.payload);\n\n// Retrieve previous states from global variables\nlet co2ProductionOn = global.get(\"co2_production_on\") || false;\nlet ventilationOn = global.get(\"ventilation_on\") || false;\nlet lastAction = global.get(\"lastCO2Action\") || \"idle\";\n\n// Define new action\nlet newAction = \"idle\";\n\n// Adjust CO2 based on active systems\nif (co2ProductionOn) {\n    co2 += 25; // Gradually increase CO2\n}\nif (ventilationOn) {\n    co2 -= 25; // Gradually decrease CO2\n}\n\n// Ensure CO2 stays within realistic bounds\nif (co2 > 2000) co2 = 2000;\nif (co2 < 0) co2 = 0;\n\n// Determine system behavior based on CO2 levels\nif (co2 < 400 && !co2ProductionOn) {\n    newAction = \"co2_production_on\";\n    co2ProductionOn = true;\n    ventilationOn = false;\n    global.set(\"co2_production_on\", true);\n    global.set(\"ventilation_on\", false);\n} else if (co2 > 1000 && !ventilationOn) {\n    newAction = \"ventilation_on\";\n    ventilationOn = true;\n    co2ProductionOn = false;\n    global.set(\"ventilation_on\", true);\n    global.set(\"co2_production_on\", false);\n} else if (co2ProductionOn && co2 >= 400) {\n    newAction = \"co2_production_off\";\n    co2ProductionOn = false;\n    global.set(\"co2_production_on\", false);\n} else if (ventilationOn && co2 <= 1000) {\n    newAction = \"ventilation_off\";\n    ventilationOn = false;\n    global.set(\"ventilation_on\", false);\n}\n\n// Avoid sending duplicate actions\nif (newAction !== lastAction) {\n    global.set(\"lastCO2Action\", newAction);\n    msg.payload = {\n        action: newAction,\n        co2: co2\n    };\n    node.send([msg, { topic: \"enoki/actuators/co2\", payload: newAction }]);\n    return msg;\n}\n\nreturn null;\n",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 390,
-        "y": 500,
-        "wires": [
-            [
-                "7390916ad97c599b",
-                "9d392cc915d8bad4"
-            ]
-        ]
-    },
-    {
-        "id": "69fe8bc16ae56232",
-        "type": "mqtt in",
-        "z": "05f58b1d7419cee3",
-        "name": "",
-        "topic": "enoki/co2",
-        "qos": "2",
-        "datatype": "auto-detect",
-        "broker": "74cf56750d051bd0",
-        "nl": false,
-        "rap": true,
-        "rh": 0,
-        "inputs": 0,
-        "x": 120,
-        "y": 500,
-        "wires": [
-            [
-                "291a71c905a89b97",
-                "8cbb1d9b35b25ea3"
-            ]
-        ]
-    },
-    {
-        "id": "7390916ad97c599b",
-        "type": "debug",
-        "z": "05f58b1d7419cee3",
-        "name": "Current CO2",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 430,
-        "y": 580,
-        "wires": []
-    },
-    {
-        "id": "291a71c905a89b97",
-        "type": "debug",
-        "z": "05f58b1d7419cee3",
-        "name": "sub CO2",
-        "active": false,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 180,
-        "y": 580,
-        "wires": []
-    },
-    {
-        "id": "9d392cc915d8bad4",
-        "type": "mqtt out",
-        "z": "05f58b1d7419cee3",
-        "name": "",
-        "topic": "enoki/actuators/co2",
-        "qos": "",
-        "retain": "",
-        "respTopic": "",
-        "contentType": "",
-        "userProps": "",
-        "correl": "",
-        "expiry": "",
-        "broker": "74cf56750d051bd0",
+        "id": "58826b4ef40b7ff8",
+        "type": "influxdb out",
+        "z": "65217f725802e13e",
+        "influxdb": "ced685228dea91e6",
+        "name": "mushroom_db",
+        "measurement": "sensor_data",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "enoki-org",
+        "bucket": "enoki-bucket",
         "x": 680,
-        "y": 500,
+        "y": 100,
         "wires": []
     },
     {
-        "id": "77e4f65bb7367d88",
-        "type": "function",
-        "z": "05f58b1d7419cee3",
-        "name": "Ventilation On",
-        "func": "let co2 = parseFloat(msg.payload);\n\nif (global.get(\"co2_production_on\")) {\n    co2 += 50; // Gradually increase CO2\n}\nif (global.get(\"ventilation_on\")) {\n    co2 -= 50; // Gradually decrease CO2\n}\n\nif (co2 > 2000) co2 = 2000;\nif (co2 < 0) co2 = 0;\n\nmsg.payload = co2;\nreturn msg;\n\n",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 1180,
-        "y": 720,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "5904bdd445285c39",
-        "type": "function",
-        "z": "05f58b1d7419cee3",
-        "name": "Ventilation Off",
-        "func": "let co2 = parseFloat(msg.payload);\n\nif (global.get(\"ventilation_on\") && co2 <= 800) {\n    msg.payload = \"ventilation_off\";\n    global.set(\"ventilation_on\", false);\n    return msg;\n}\n\nif (global.get(\"co2_production_on\") && co2 >= 400) {\n    msg.payload = \"co2_production_off\";\n    global.set(\"co2_production_on\", false);\n    return msg;\n}\n\nreturn null;\n",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 1180,
-        "y": 780,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "01a1874767581249",
-        "type": "function",
-        "z": "05f58b1d7419cee3",
-        "name": "Humidifier On",
-        "func": "let humidity = parseFloat(msg.payload);\n\nif (global.get(\"humidifier_on\")) {\n    humidity += 2; // Gradually increase humidity\n}\nif (global.get(\"dehumidifier_on\")) {\n    humidity -= 2; // Gradually decrease humidity\n}\n\nif (humidity > 100) humidity = 100;\nif (humidity < 0) humidity = 0;\n\nmsg.payload = humidity;\nreturn msg;\n",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 1180,
-        "y": 520,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "50240fb9d5b8967a",
-        "type": "function",
-        "z": "05f58b1d7419cee3",
-        "name": "Humidifier Off",
-        "func": "let humidity = parseFloat(msg.payload);\n\nif (global.get(\"humidifier_on\") && humidity >= 95) {\n    msg.payload = \"humidifier_off\";\n    global.set(\"humidifier_on\", false);\n    return msg;\n}\n\nif (global.get(\"dehumidifier_on\") && humidity <= 85) {\n    msg.payload = \"dehumidifier_off\";\n    global.set(\"dehumidifier_on\", false);\n    return msg;\n}\n\nreturn null;",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 1180,
-        "y": 580,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "e0d3fe114f88f597",
-        "type": "mqtt out",
-        "z": "05f58b1d7419cee3",
+        "id": "20e18699527beb9a",
+        "type": "mqtt in",
+        "z": "2108e6928f5f2f38",
         "name": "",
-        "topic": "enoki/actuators/temperature",
+        "topic": "enoki/house_1/sensor/temperature/#",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "74cf56750d051bd0",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 170,
+        "y": 60,
+        "wires": [
+            [
+                "3e63cbbd437310e5"
+            ]
+        ]
+    },
+    {
+        "id": "7edf66f3f47f1903",
+        "type": "function",
+        "z": "2108e6928f5f2f38",
+        "name": "Calculate Avg Temperature",
+        "func": "// Extract sensor values from topics\nconst deviceKeys = Object.keys(msg.payload).filter(key => key.startsWith(\"enoki/house_1/sensor/temperature/\"));\nconst sensorValues = deviceKeys.map(key => msg.payload[key]);\n\n// Calculate average temperature\nconst avgTemperature = sensorValues.reduce((sum, value) => sum + value, 0) / sensorValues.length;\n\nmsg.payload = {\n    avgTemparature: +parseFloat(avgTemperature).toFixed(2),\n    sensors: sensorValues,\n    raw: msg.payload\n};\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 180,
+        "wires": [
+            [
+                "1f33efc70071406b"
+            ]
+        ]
+    },
+    {
+        "id": "3e63cbbd437310e5",
+        "type": "join",
+        "z": "2108e6928f5f2f38",
+        "name": "Temperature Sensors",
+        "mode": "custom",
+        "build": "object",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "useparts": false,
+        "accumulate": true,
+        "timeout": "",
+        "count": "3",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 230,
+        "y": 120,
+        "wires": [
+            [
+                "7edf66f3f47f1903"
+            ]
+        ]
+    },
+    {
+        "id": "f3a1ed9c85191b76",
+        "type": "mqtt out",
+        "z": "2108e6928f5f2f38",
+        "name": "",
+        "topic": "enoki/house_1/actuators/actions",
         "qos": "",
         "retain": "",
         "respTopic": "",
@@ -604,15 +274,192 @@
         "correl": "",
         "expiry": "",
         "broker": "74cf56750d051bd0",
-        "x": 720,
-        "y": 160,
+        "x": 700,
+        "y": 420,
         "wires": []
     },
     {
-        "id": "84cb79988b3bf37f",
-        "type": "inject",
-        "z": "05f58b1d7419cee3",
+        "id": "008ae6c434d1254b",
+        "type": "mqtt in",
+        "z": "2108e6928f5f2f38",
         "name": "",
+        "topic": "enoki/house_1/sensor/humidity/#",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "74cf56750d051bd0",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 150,
+        "y": 240,
+        "wires": [
+            [
+                "7d4643ed400a30c3"
+            ]
+        ]
+    },
+    {
+        "id": "7d4643ed400a30c3",
+        "type": "join",
+        "z": "2108e6928f5f2f38",
+        "name": "Humidity Sensors",
+        "mode": "custom",
+        "build": "object",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "useparts": false,
+        "accumulate": true,
+        "timeout": "",
+        "count": "3",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 200,
+        "y": 300,
+        "wires": [
+            [
+                "6ec7516a99fb454d"
+            ]
+        ]
+    },
+    {
+        "id": "6ec7516a99fb454d",
+        "type": "function",
+        "z": "2108e6928f5f2f38",
+        "name": "Calculate Avg Humidity",
+        "func": "// Extract sensor values from topics\nconst deviceKeys = Object.keys(msg.payload).filter(key => key.startsWith(\"enoki/house_1/sensor/humidity/\"));\nconst sensorValues = deviceKeys.map(key => msg.payload[key]);\n\n// Calculate average humidity\nconst avgHumidity = sensorValues.reduce((sum, value) => sum + value, 0) / sensorValues.length;\n\nmsg.payload = {\n    avgHumidity: +parseFloat(avgHumidity).toFixed(2),\n    sensors: sensorValues,\n    raw: msg.payload\n};\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 360,
+        "wires": [
+            [
+                "1f33efc70071406b"
+            ]
+        ]
+    },
+    {
+        "id": "01d3491d59174f06",
+        "type": "debug",
+        "z": "2108e6928f5f2f38",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 320,
+        "y": 680,
+        "wires": []
+    },
+    {
+        "id": "c7883a9607155730",
+        "type": "mqtt in",
+        "z": "2108e6928f5f2f38",
+        "name": "",
+        "topic": "enoki/house_1/actuators/actions",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "74cf56750d051bd0",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 170,
+        "y": 620,
+        "wires": [
+            [
+                "01d3491d59174f06"
+            ]
+        ]
+    },
+    {
+        "id": "39aada93190454ad",
+        "type": "mqtt in",
+        "z": "2108e6928f5f2f38",
+        "name": "",
+        "topic": "enoki/house_1/sensor/co2/#",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "74cf56750d051bd0",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 140,
+        "y": 440,
+        "wires": [
+            [
+                "a0261c120c126845"
+            ]
+        ]
+    },
+    {
+        "id": "a0261c120c126845",
+        "type": "join",
+        "z": "2108e6928f5f2f38",
+        "name": "CO2 Sensors",
+        "mode": "custom",
+        "build": "object",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "useparts": false,
+        "accumulate": true,
+        "timeout": "",
+        "count": "2",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 170,
+        "y": 500,
+        "wires": [
+            [
+                "d38d55f5e44db6f0"
+            ]
+        ]
+    },
+    {
+        "id": "d38d55f5e44db6f0",
+        "type": "function",
+        "z": "2108e6928f5f2f38",
+        "name": "Calculate Avg CO2",
+        "func": "// Extract sensor values from topics\nconst deviceKeys = Object.keys(msg.payload).filter(key => key.startsWith(\"enoki/house_1/sensor/co2/\"));\nconst sensorValues = deviceKeys.map(key => msg.payload[key]);\n\n// Calculate average CO2\nconst avgCO2 = sensorValues.reduce((sum, value) => sum + value, 0) / sensorValues.length;\n\nmsg.payload = {\n    avgCO2: +parseFloat(avgCO2).toFixed(2),\n    sensors: sensorValues,\n    raw: msg.payload\n};\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 390,
+        "y": 500,
+        "wires": [
+            [
+                "1f33efc70071406b"
+            ]
+        ]
+    },
+    {
+        "id": "5741ec9f72c97110",
+        "type": "inject",
+        "z": "2108e6928f5f2f38",
+        "name": "Test Controller",
         "props": [
             {
                 "p": "payload"
@@ -623,14 +470,140 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "payload": "388",
-        "payloadType": "num",
-        "x": 210,
-        "y": 660,
+        "payload": "{\"avgCO2\": 388}",
+        "payloadType": "json",
+        "x": 630,
+        "y": 160,
         "wires": [
             [
-                "8cbb1d9b35b25ea3"
+                "1f33efc70071406b"
             ]
         ]
+    },
+    {
+        "id": "1f33efc70071406b",
+        "type": "function",
+        "z": "2108e6928f5f2f38",
+        "name": "Actuator Controller",
+        "func": "const thresholds = {\n    fan: { key: \"avgTemperature\", condition: (value) => value > 25 },\n    heater: { key: \"avgTemperature\", condition: (value) => value < 10 },\n    humidifier: { key: \"avgHumidity\", condition: (value) => value < 85 },\n    dehumidifier: { key: \"avgHumidity\", condition: (value) => value > 95 },\n    ventilation: { key: \"avgCO2\", condition: (value) => value > 1000 },\n    co2_production: { key: \"avgCO2\", condition: (value) => value < 400 }\n};\n\nlet actions = [];\n\nfor (let actuator in thresholds) {\n    const { key, condition } = thresholds[actuator];\n    const value = msg.payload[key]; \n\n    if (value !== undefined) {  \n        const lastState = flow.get(`${actuator}State`) || \"OFF\";\n        let newState = condition(value) ? \"ON\" : \"OFF\"; \n\n        if (newState !== lastState) {\n            flow.set(`${actuator}State`, newState);\n            actions.push({ \n                command: newState, \n                actuator, \n                value\n            });\n        }\n    }\n}\n\nif (actions.length > 0) {\n    msg.payload = { actions };\n    return msg;\n} \n\nreturn null; ",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 630,
+        "y": 360,
+        "wires": [
+            [
+                "f3a1ed9c85191b76"
+            ]
+        ]
+    },
+    {
+        "id": "c86a844a86698b47",
+        "type": "telegram sender",
+        "z": "29f30ea989ea8021",
+        "name": "",
+        "bot": "d884453a1c3fdf2e",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 460,
+        "y": 140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6259f0a730e86137",
+        "type": "telegram receiver",
+        "z": "29f30ea989ea8021",
+        "name": "",
+        "bot": "d884453a1c3fdf2e",
+        "saveDataDir": "",
+        "filterCommands": false,
+        "x": 120,
+        "y": 280,
+        "wires": [
+            [
+                "0e4c039882feb9d5"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "0e4c039882feb9d5",
+        "type": "debug",
+        "z": "29f30ea989ea8021",
+        "name": "Msg on Telegram",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 330,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "0809f44624d3f0ba",
+        "type": "mqtt in",
+        "z": "29f30ea989ea8021",
+        "name": "",
+        "topic": "enoki/house_1/actuators/actions",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "74cf56750d051bd0",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 170,
+        "y": 60,
+        "wires": [
+            [
+                "5fe1ee66f263250e"
+            ]
+        ]
+    },
+    {
+        "id": "5fe1ee66f263250e",
+        "type": "function",
+        "z": "29f30ea989ea8021",
+        "name": "Format Alert",
+        "func": "const topicParts = msg.topic ? msg.topic.split(\"/\") : [];\nconst house = topicParts.length > 1 ? topicParts[1] : \"Unknown House\"; // Handle missing topic\n\nif (!msg.payload.actions || msg.payload.actions.length === 0) {\n    return null;\n}\n\nlet message = `🚨 Alert on Enoki House 🍄\\n`;\nmessage += `🏠 House: ${house}\\n`;\nmessage += `🚀 Actuator Updates:\\n\\n`;\n\nmsg.payload.actions.forEach(action => {\n    message += `(Current Value: ${action.value})\\n${\n        action.actuator.toUpperCase()} → ${action.command}\\n`;\n});\n\n\nmsg.payload = {\n    chatId: \"6263441576\", \n    type: \"message\",\n    content: message\n};\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 210,
+        "y": 140,
+        "wires": [
+            [
+                "426e60bf83b2c5f0",
+                "c86a844a86698b47"
+            ]
+        ]
+    },
+    {
+        "id": "426e60bf83b2c5f0",
+        "type": "debug",
+        "z": "29f30ea989ea8021",
+        "name": "debug 6",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 240,
+        "y": 200,
+        "wires": []
     }
 ]

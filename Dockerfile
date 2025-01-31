@@ -7,6 +7,9 @@ WORKDIR /app
 # Copy the simulation script into the container
 COPY simulate_data.py .
 
+# Copy the configuration file into the container
+COPY config.json .
+
 # Install the required Python libraries
 RUN pip install --upgrade --no-cache-dir paho-mqtt
 

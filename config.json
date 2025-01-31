@@ -1,0 +1,34 @@
+{
+    "mqtt": {
+        "broker": "mosquitto",
+        "port": 1883
+    },
+    "parameters": {
+        "temperature": {
+            "normal_range": [10, 25],
+            "abnormal_range": [[0, 9], [26, 35]]
+        },
+        "humidity": {
+            "normal_range": [85, 95],
+            "abnormal_range": [[70, 84], [96, 100]]
+        },
+        "co2": {
+            "normal_range": [400, 800],
+            "abnormal_range": [[200, 399], [801, 1500]]
+        }
+    },
+    "houses": {
+        "house_1": {
+            "sensors": {
+                "temperature_1": { "topic": "enoki/house_1/sensor/temperature/device_1" },
+                "temperature_2": { "topic": "enoki/house_1/sensor/temperature/device_2" },
+                "temperature_3": { "topic": "enoki/house_1/sensor/temperature/device_3" },
+                "humidity_1": { "topic": "enoki/house_1/sensor/humidity/device_1" },
+                "humidity_2": { "topic": "enoki/house_1/sensor/humidity/device_2" },
+                "humidity_3": { "topic": "enoki/house_1/sensor/humidity/device_3" },
+                "co2_1": { "topic": "enoki/house_1/sensor/co2/device_1" },
+                "co2_2": { "topic": "enoki/house_1/sensor/co2/device_2" }
+            }
+        }
+    }
+}
