@@ -12,31 +12,28 @@ MQTT_PORT = config["mqtt"]["port"]
 PARAMETERS = config["parameters"]
 HOUSES = config["houses"]
 
-# State dictionary to store the last known values for each sensor
+# State dictionary to state the starting point (our case)
 sensor_states = {
-    "temperature": 20.0,  # Starting point for temperature
-    "humidity": 90.0,     # Starting point for humidity
-    "co2": 600.0          # Starting point for CO2
+    "temperature": 20.0,  
+    "humidity": 90.0,     
+    "co2": 600.0          
 }
 
-# Simulate realistic gradual changes for a given sensor
+# Simulate gradual changes for a sensor value
 def simulate_gradual_change(sensor_type):
     if sensor_type == "temperature":
-        # Adjust temperature by ±0.5°C
-        change = random.uniform(-0.5, 0.5)
+        change = random.uniform(-0.5, 0.5) # Adjust temperature by ±0.5°C
         sensor_states[sensor_type] = max(10, min(25, sensor_states[sensor_type] + change))
     elif sensor_type == "humidity":
-        # Adjust humidity by ±1%
-        change = random.uniform(-1, 1)
+        change = random.uniform(-1, 1) # Adjust humidity by ±1%
         sensor_states[sensor_type] = max(85, min(95, sensor_states[sensor_type] + change))
     elif sensor_type == "co2":
-        # Adjust CO2 by ±10 ppm
-        change = random.uniform(-10, 10)
+        change = random.uniform(-10, 10) # Adjust CO2 by ±10 ppm
         sensor_states[sensor_type] = max(400, min(800, sensor_states[sensor_type] + change))
     
     return round(sensor_states[sensor_type], 2)
 
-# Generate abnormal data within the given range (supports both too low & too high)
+# Generate abnormal data within the given range (supports both too low & too high cases)
 def generate_abnormal_data(sensor_type):
     abnormal_range = PARAMETERS[sensor_type]["abnormal_range"]
 
@@ -91,7 +88,7 @@ def publish_data():
         while True:
             for house_name, house_data in HOUSES.items():
                 for sensor_name, sensor_info in house_data["sensors"].items():
-                    sensor_type = sensor_name.split("_")[0]  # Extract sensor type (temperature, humidity, co2)
+                    sensor_type = sensor_name.split("_")[0] 
                     value = get_data(sensor_type)
                     client.publish(sensor_info["topic"], value)
                     print(f"[{house_name}] Published: {sensor_name} = {value} to {sensor_info['topic']}")
