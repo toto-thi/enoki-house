@@ -12,7 +12,7 @@ services:
         ipv4_address: 172.20.0.10
 
   simulator:
-    container_name: data_generator # change name later
+    container_name: data_generator
     build:
       context: .
     restart: always
@@ -55,6 +55,10 @@ services:
     depends_on:
       - mosquitto
       - influxdb
+    environment:
+      - NODE_RED_ENABLE_PROJECTS=true
+      - NODE_RED_ADMIN_USER=admin
+      - NODE_RED_ADMIN_PASS=admin123
 
   grafana:
     container_name: grafana

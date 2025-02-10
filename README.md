@@ -29,7 +29,7 @@ Note: Your machine must have docker installed before testing our simulation.
 You can start playing with this project by simply run this command:
 
 ```bash
-docker-compose up --build -d
+docker compose up --build -d
 ```
 
 Then you can open your web browser and access the following services:
@@ -38,6 +38,16 @@ To view Node-RED Flow visit: **[localhost:1880](https://localhost:1880)**
 
 To view InfluxDB Database visit: **[localhost:8086](https://localhost:8086)**
 
+```bash
+Username: admin
+Password: admin123
+```
+
 To view Grafana Dashboard visit: **[localhost:3000](https://localhost:3000)**
+
+```bash
+Username: admin
+Password: admin777#
+```
 
 To receive notification of our actuator actions, please interact with our **[Enoki-bot](https://t.me/EnokiiBot)** on Telegram.
