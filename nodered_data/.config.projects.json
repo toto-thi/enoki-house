@@ -1,0 +1,8 @@
+{
+    "projects": {
+        "Enoki-House": {
+            "credentialSecret": "12345"
+        }
+    },
+    "activeProject": "Enoki-House"
+}

@@ -17,7 +17,7 @@
             }
         },
         "debug": {
-            "filter": "filterSelected",
+            "filter": "filterCurrent",
             "filteredNodes": [
                 "aa8cfb35bb2c6be6",
                 "43e0319ce008fa92",
@@ -31,6 +31,15 @@
                 "ca92dc99904ebaf5",
                 "9fa9284f6f917885"
             ]
+        },
+        "git": {
+            "user": {
+                "name": "",
+                "email": ""
+            },
+            "workflow": {
+                "mode": "manual"
+            }
         }
     }
 }
