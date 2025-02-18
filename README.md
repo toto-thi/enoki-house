@@ -20,7 +20,7 @@ To demonstrate this approach, we simulate a controlled Enoki mushroom growing en
 
 ## Data Flow
 
--- Fill later
+![Data Flow]('/images/data-flow.png')
 
 ## Getting Start
 
@@ -34,16 +34,16 @@ docker compose up --build -d
 
 Then you can open your web browser and access the following services:
 
-To view Node-RED Flow visit: **[localhost:1880](https://localhost:1880)**
+To view Node-RED Flow visit: **[localhost:1880](http://localhost:1880)**
 
-To view InfluxDB Database visit: **[localhost:8086](https://localhost:8086)**
+To view InfluxDB Database visit: **[localhost:8086](http://localhost:8086)**
 
 ```bash
 Username: admin
 Password: admin123
 ```
 
-To view Grafana Dashboard visit: **[localhost:3000](https://localhost:3000)**
+To view Grafana Dashboard visit: **[localhost:3000](http://localhost:3000)**
 
 ```bash
 Username: admin
