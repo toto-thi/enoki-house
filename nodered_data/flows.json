@@ -207,7 +207,7 @@
         "y": 60,
         "wires": [
             [
-                "7edf66f3f47f1903"
+                "3e63cbbd437310e5"
             ]
         ]
     },
@@ -216,7 +216,7 @@
         "type": "function",
         "z": "2108e6928f5f2f38",
         "name": "Calculate Avg Temperature",
-        "func": "// // Extract sensor values from topics\n// const deviceKeys = Object.keys(msg.payload).filter(key => key.startsWith(\"enoki/house_1/sensor/temperature/\"));\n// const sensorValues = deviceKeys.map(key => msg.payload[key]);\n\n// // Calculate average temperature\n// const avgTemperature = sensorValues.reduce((sum, value) => sum + value, 0) / sensorValues.length;\n\n// msg.payload = {\n//     avgTemparature: +parseFloat(avgTemperature).toFixed(2),\n//     sensors: sensorValues,\n//     raw: msg.payload\n// };\n\n// return msg.payload;\n\n// Retrieve or initialize stored house sensor data in Node-RED context\nlet houseData = context.get(\"houseData\") || {};\n\n// Parse incoming MQTT topic structure: \"enoki/house_1/sensor/temperature/device_1\"\nconst metadata = msg.topic.split(\"/\");\nconst house = metadata[1]; // Extract house ID (e.g., \"house_1\")\nconst device = metadata[4]; // Extract device ID (e.g., \"device_1\")\nconst temperature = parseFloat(msg.payload); // Convert to float\n\n// Ensure house entry exists in storage\nif (!houseData[house]) {\n    houseData[house] = {}; // Initialize new house entry\n}\n\n// Update only the specific device's temperature in the house\nhouseData[house][device] = temperature;\n\n// Save updated data in Node-RED context\ncontext.set(\"houseData\", houseData);\n\nlet results = {};\nObject.keys(houseData).forEach(house => {\n    const sensorValues = Object.values(houseData[house]); // Get all temperature readings for this house\n    const avgTemperature = sensorValues.reduce((sum, value) => sum + value, 0) / sensorValues.length;\n    \n    // Store calculated results\n    results[house] = {\n        avgTemperature: +avgTemperature.toFixed(2), // Round to 2 decimals\n        sensorValues: sensorValues // Store raw sensor readings\n    };\n});\n\n// Output message with calculated average per house\nmsg.payload = {\n    houses: results, // Average temperatures per house\n    raw: houseData // Raw sensor readings per house\n};\n\nreturn msg;",
+        "func": "// Extract sensor values from topics\nconst deviceKeys = Object.keys(msg.payload).filter(key => key.startsWith(\"enoki/house_1/sensor/temperature/\"));\nconst sensorValues = deviceKeys.map(key => msg.payload[key]);\n\n// Calculate average humidity\nconst avgTemperature = sensorValues.reduce((sum, value) => sum + value, 0) / sensorValues.length;\n\nmsg.payload = {\n    avgTemperature: +parseFloat(avgTemperature).toFixed(2),\n    sensors: sensorValues,\n    raw: msg.payload\n};\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -227,7 +227,7 @@
         "y": 180,
         "wires": [
             [
-                "38432e8ff64ab2a3"
+                "1f33efc70071406b"
             ]
         ]
     },
@@ -252,10 +252,12 @@
         "reduceInit": "",
         "reduceInitType": "num",
         "reduceFixup": "",
-        "x": 150,
-        "y": 140,
+        "x": 190,
+        "y": 120,
         "wires": [
-            []
+            [
+                "7edf66f3f47f1903"
+            ]
         ]
     },
     {
@@ -497,22 +499,6 @@
                 "f3a1ed9c85191b76"
             ]
         ]
-    },
-    {
-        "id": "38432e8ff64ab2a3",
-        "type": "debug",
-        "z": "2108e6928f5f2f38",
-        "name": "debug 1",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 440,
-        "y": 80,
-        "wires": []
     },
     {
         "id": "c86a844a86698b47",
