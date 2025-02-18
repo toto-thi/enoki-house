@@ -20,7 +20,7 @@ To demonstrate this approach, we simulate a controlled Enoki mushroom growing en
 
 ## Data Flow
 
-![Data Flow]('/images/data-flow.png')
+![Data Flow]('./images/data-flow.png')
 
 ## Getting Start
 
