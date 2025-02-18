@@ -14,6 +14,11 @@
             },
             "tours": {
                 "welcome": "4.0.8"
+            },
+            "dialog": {
+                "export": {
+                    "pretty": true
+                }
             }
         },
         "debug": {
@@ -34,8 +39,8 @@
         },
         "git": {
             "user": {
-                "name": "",
-                "email": ""
+                "name": "admin",
+                "email": "toto.thii99@gmail.com"
             },
             "workflow": {
                 "mode": "manual"

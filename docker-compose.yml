@@ -56,7 +56,6 @@ services:
       - mosquitto
       - influxdb
     environment:
-      - NODE_RED_ENABLE_PROJECTS=true
       - NODE_RED_ADMIN_USER=admin
       - NODE_RED_ADMIN_PASS=admin123
 
